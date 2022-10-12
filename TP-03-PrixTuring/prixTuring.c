@@ -48,12 +48,39 @@ int scanLineAsInt() {
 	return buf;
 }
 
+typedef struct
+{
+	int annee;
+	char* nom;
+	char* description;
+} Gagnant;
+
+void readWinners(int nbGagnants)
+{
+	int c = 0;
+	while(c<=nbGagnants)
+	{
+		Gagnant nobel;
+		nobel.annee = scanLine();
+		nobel.nom = scanLineAsInt();
+		nobel.description = scanLineAsInt();
+		c++;
+	}
+}
+
+// void printWinners(Winner tabWinners[])
+// {
+
+// }
 
 int main(void)
 {
 
 	int nbGagnants = scanLineAsInt();
 	printf("nbGagnants = %i\n",nbGagnants);
+	
+	readWinners(nbGagnants);
+	printWinners();
 
 	return EXIT_SUCCESS;
 }

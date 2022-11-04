@@ -26,10 +26,14 @@ int taille(Liste l){
 // ajoute l'élément v en tete de la liste l
 Liste ajoutTete(Element v, Liste l) {
 	Liste liste;
-	Cellule cellule;
-	cellule.val = v;
-	int taille_l = taille(l);
-
+	if(estVide(l) != NULL){
+		Cellule tete;
+		tete.val = v;
+		int taille_l = taille(l);
+		for(int i=0; i++; i<=taille_l){
+			
+		}
+	}
 	return liste;
 }
 

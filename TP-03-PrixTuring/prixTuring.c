@@ -60,18 +60,21 @@ void readWinners(int nbGagnants)
 	int c = 0;
 	while(c<=nbGagnants)
 	{
+		// On lit les 3 lignes qui correspondent au gagnant
 		Gagnant nobel;
-		nobel.annee = scanLine();
-		nobel.nom = scanLineAsInt();
-		nobel.description = scanLineAsInt();
+		nobel.annee = scanLineAsInt();
+		nobel.nom = scanLine();
+		nobel.description = scanLine();
+		
+		// On stocke le gagnant dans un tableau
+		
+
+		// On désalloue la mémoire
+		free(nobel.nom); nobel.nom = NULL;
+		free(nobel.description); nobel.description = NULL;	
 		c++;
 	}
 }
-
-// void printWinners(Winner tabWinners[])
-// {
-
-// }
 
 int main(void)
 {
@@ -79,7 +82,7 @@ int main(void)
 	int nbGagnants = scanLineAsInt();
 	printf("nbGagnants = %i\n",nbGagnants);
 	
-	readWinners(nbGagnants);
+	Gagnant* tabGagnants[] = readWinners(nbGagnants);
 	printWinners();
 
 	return EXIT_SUCCESS;

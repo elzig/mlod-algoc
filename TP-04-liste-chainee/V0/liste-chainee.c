@@ -18,9 +18,19 @@ Liste creer(Element v){
 	return liste;
 }
 
+// retourne la taille de la liste
+int taille(Liste l){
+	return sizeof(l)/sizeof(l[0]);
+}
+
 // ajoute l'élément v en tete de la liste l
 Liste ajoutTete(Element v, Liste l) {
-	return TODO;
+	Liste liste;
+	Cellule cellule;
+	cellule.val = v;
+	int taille_l = taille(l);
+
+	return liste;
 }
 
 

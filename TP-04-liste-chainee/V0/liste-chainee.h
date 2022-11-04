@@ -19,6 +19,9 @@ bool estVide(Liste l);
 // créer une liste d'un seul élément contenant la valeur v
 Liste creer(Element v);
 
+// retourne la taille de la liste
+int taille(Liste l);
+
 // ajoute l'élément v en tete de la liste l
 Liste ajoutTete(Element v, Liste l);
 

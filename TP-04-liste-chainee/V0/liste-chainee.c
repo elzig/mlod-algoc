@@ -61,7 +61,9 @@ void afficheListe_r(Liste l) {
 	TODO;
 }
 
-void detruireElement(Element e) {}
+void detruireElement(Element e) {
+	;
+}
 
 // Détruit tous les éléments de la liste l
 // version itérative

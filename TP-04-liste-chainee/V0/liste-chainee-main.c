@@ -10,7 +10,8 @@ int main(void){
 
 	l = NULL;
 	printf("estVide(l) = %s\n",estVide(l)?"TRUE":"FALSE");
-	printf("La taille de la liste est = %u\n", taille(l));
+	
+	// printf("La taille de la liste est = %u\n", taille(l));
 
 	// l = ajoutTete(1,l);
 	// l = ajoutTete(2,l);

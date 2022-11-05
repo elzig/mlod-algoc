@@ -26,17 +26,11 @@ int taille(Liste l){
 
 // ajoute l'élément v en tete de la liste l
 Liste ajoutTete(Element v, Liste l) {
-	if(estVide(l) == true){
-		return creer(v);
-	}
-	else{
-		Cellule* nouvelle_cellule_p = malloc(sizeof(Cellule*));
-		nouvelle_cellule_p->val = v;
-		nouvelle_cellule_p->suiv = l;
-		l = nouvelle_cellule_p;
-		return l;
-	}
-	
+	Cellule* nouvelle_cellule_p = malloc(sizeof(Cellule*));
+	nouvelle_cellule_p->val = v;
+	nouvelle_cellule_p->suiv = l;
+	l = nouvelle_cellule_p;
+	return l;
 }
 
 
@@ -50,8 +44,16 @@ void afficheElement(Element e) {
 // Attention la liste peut être vide !
 // version itérative
 void afficheListe_i(Liste l) {
-	
-	printf("");
+	if(estVide(l) == true){
+		printf("La liste est vide");
+	}
+	else{
+		Cellule* cellule_courante_p = l;
+		while(cellule_courante_p != NULL){
+			afficheElement(cellule_courante_p->val);
+			cellule_courante_p = cellule_courante_p->suiv;
+		}
+	}
 }
 
 // version recursive

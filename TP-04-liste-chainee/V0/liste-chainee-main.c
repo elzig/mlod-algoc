@@ -11,19 +11,18 @@ int main(void){
 	l = NULL;
 	printf("estVide(l) = %s\n",estVide(l)?"TRUE":"FALSE");
 	
-	// printf("La taille de la liste est = %u\n", taille(l));
+	
+	l = ajoutTete(1,l);
+	l = ajoutTete(2,l);
+	l = ajoutTete(4,l);
+	l = ajoutTete(1,l);
+	l = ajoutTete(5,l);
+	l = ajoutTete(6,l);
+	l = ajoutTete(2,l);
+	l = ajoutTete(4,l);
+	l = ajoutTete(1,l);
 
-	// l = ajoutTete(1,l);
-	// l = ajoutTete(2,l);
-	// l = ajoutTete(4,l);
-	// l = ajoutTete(1,l);
-	// l = ajoutTete(5,l);
-	// l = ajoutTete(6,l);
-	// l = ajoutTete(2,l);
-	// l = ajoutTete(4,l);
-	// l = ajoutTete(1,l);
-
-	// afficheListe_i(l);
+	afficheListe_i(l);
 
 	// ajoutFin_r(99,l);
 	// afficheListe_i(l);

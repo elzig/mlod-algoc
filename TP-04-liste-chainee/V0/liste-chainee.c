@@ -11,11 +11,12 @@ bool estVide(Liste l) {
 
 // créer une liste d'un seul élément contenant la valeur v
 Liste creer(Element v){
-	Liste liste;
-	Cellule cellule;
-	cellule.val = v;
-	liste = &cellule;
-	return liste;
+	Liste* liste = malloc(sizeof(Liste));
+	Cellule* cellule = malloc(sizeof(Cellule));
+	cellule->val = v;
+	cellule->suiv = NULL; // pointeur vers NULL si pas d'élément suivant
+	liste = cellule;
+	return *liste;
 }
 
 // retourne la taille de la liste
@@ -25,16 +26,9 @@ int taille(Liste l){
 
 // ajoute l'élément v en tete de la liste l
 Liste ajoutTete(Element v, Liste l) {
-	Liste liste;
-	if(estVide(l) != NULL){
-		Cellule tete;
-		tete.val = v;
-		int taille_l = taille(l);
-		for(int i=0; i++; i<=taille_l){
-			
-		}
-	}
-	return liste;
+	Cellule* nouvelle_cellule = malloc(sizeof(Cellule*));
+	
+	return TODO;
 }
 
 
@@ -44,7 +38,7 @@ void afficheElement(Element e) {
 
 // affiche tous les éléments de la liste l
 // Attention, cette fonction doit être indépendante du type des éléments de la liste
-// utiliser une fonction annexe affiche_element
+// utiliser une fonction annexe afficheElement
 // Attention la liste peut être vide !
 // version itérative
 void afficheListe_i(Liste l) {

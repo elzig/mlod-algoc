@@ -4,6 +4,8 @@
 
 typedef int Element;
 
+// une cellule contient un entier et un pointeur vers
+// la cellule suivante
 struct cellule_s {
 	Element val;
 	struct cellule_s* suiv;
@@ -11,6 +13,7 @@ struct cellule_s {
 
 typedef struct cellule_s Cellule;
 
+// une liste est un pointeur vers la première cellule
 typedef Cellule* Liste;
 
 // retourne vrai si l est vide et faux sinon

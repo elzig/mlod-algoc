@@ -11,12 +11,10 @@ bool estVide(Liste l) {
 
 // créer une liste d'un seul élément contenant la valeur v
 Liste creer(Element v){
-	Liste* liste = malloc(sizeof(Liste));
-	Cellule* cellule_p = malloc(sizeof(Cellule));
-	cellule_p->val = v;
-	cellule_p->suiv = NULL; // pointeur vers NULL si pas d'élément suivant
-	liste = cellule_p;
-	return *liste;
+	Liste liste = malloc(sizeof(Cellule));
+	liste->val = v;
+	liste->suiv = NULL;
+	return liste;
 }
 
 // retourne la taille de la liste
@@ -85,12 +83,25 @@ void detruire_r(Liste l) {
 // retourne la liste dans laquelle l'élément v a été ajouté en fin
 // version itérative
 Liste ajoutFin_i(Element v, Liste l) {
-	return TODO;
+	Cellule* cellule_courante_p = l;
+	Cellule* derniere_cellule_p = malloc(sizeof(Cellule*));
+	derniere_cellule_p->val = v;
+	derniere_cellule_p->suiv = NULL;
+	while(cellule_courante_p->suiv != NULL){
+		cellule_courante_p->suiv = derniere_cellule_p;
+	}
+	return l;
 }
 
 // version recursive
 Liste ajoutFin_r(Element v, Liste l) {
-	return TODO;
+	if(estVide(l)){
+		l = creer(v);
+	}
+	else{
+		l->suiv = ajoutFin_r(v, l->suiv);
+	}
+	return l;
 }
 
 // compare deux elements

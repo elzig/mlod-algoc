@@ -22,14 +22,14 @@ int main(void){
 	l = ajoutTete(4,l);
 	l = ajoutTete(1,l);
 
-	// afficheListe_i(l);
-	afficheListe_r(l);
+	afficheListe_i(l);
+	// afficheListe_r(l);
 
-	// ajoutFin_r(99,l);
+	// ajoutFin_i(99,l);
 	// afficheListe_i(l);
 
-	// ajoutFin_r(100,l);
-	// afficheListe_i(l);
+	ajoutFin_r(100,l);
+	afficheListe_i(l);
 
 	// p = cherche_i(200,l);
 	// printf("cherche_i(200) : %s\n",estVide(p)?"pas trouve":"[ERREUR] trouve !!!");

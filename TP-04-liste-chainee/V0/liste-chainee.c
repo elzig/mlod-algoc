@@ -45,7 +45,7 @@ void afficheElement(Element e) {
 // version itérative
 void afficheListe_i(Liste l) {
 	if(estVide(l) == true){
-		printf("La liste est vide");
+		printf("La liste est vide\n");
 	}
 	else{
 		Cellule* cellule_courante_p = l;
@@ -58,7 +58,13 @@ void afficheListe_i(Liste l) {
 
 // version recursive
 void afficheListe_r(Liste l) {
-	TODO;
+	if(estVide(l) == true){
+		printf("Fin de la liste\n");
+	}
+	else{
+		afficheElement(l->val);
+		afficheListe_r(l->suiv);
+	}
 }
 
 void detruireElement(Element e) {

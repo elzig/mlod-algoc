@@ -17,18 +17,12 @@ Liste creer(Element v){
 	return liste;
 }
 
-// retourne la taille de la liste
-int taille(Liste l){
-	return sizeof(l)/sizeof(l[0]);
-}
 
 // ajoute l'élément v en tete de la liste l
 Liste ajoutTete(Element v, Liste l) {
-	Cellule* nouvelle_cellule_p = malloc(sizeof(Cellule*));
-	nouvelle_cellule_p->val = v;
-	nouvelle_cellule_p->suiv = l;
-	l = nouvelle_cellule_p;
-	return l;
+	Liste res = creer(v);
+	res->suiv = l;
+	return res;
 }
 
 
@@ -42,61 +36,70 @@ void afficheElement(Element e) {
 // Attention la liste peut être vide !
 // version itérative
 void afficheListe_i(Liste l) {
-	if(estVide(l) == true){
-		printf("La liste est vide\n");
+	Liste p = l;
+	while(!estVide(p)){
+		afficheElement(p->val);
+		p = p->suiv;
 	}
-	else{
-		Cellule* cellule_courante_p = l;
-		while(cellule_courante_p != NULL){
-			afficheElement(cellule_courante_p->val);
-			cellule_courante_p = cellule_courante_p->suiv;
-		}
-	}
+	printf("\n");
 }
 
 // version recursive
 void afficheListe_r(Liste l) {
-	if(estVide(l) == true){
-		printf("Fin de la liste\n");
-	}
-	else{
+	if(!estVide(l)){
 		afficheElement(l->val);
 		afficheListe_r(l->suiv);
 	}
+	else{
+		printf("\n");
+	}
 }
 
-void detruireElement(Element e) {
-	;
-}
+void detruireElement(Element e) {}
 
 // Détruit tous les éléments de la liste l
 // version itérative
 void detruire_i(Liste l) {
-	TODO;
+	Liste suivant;
+	Liste courant = l;
+	while(!estVide(courant)){
+		suivant = courant->suiv;
+		detruireElement(courant->val);
+		free(courant);
+		courant = suivant;
+	}
 }
 
 // version récursive
 void detruire_r(Liste l) {
-	TODO;
+	if(!estVide(l)){
+		detruire_r(l->suiv);
+		detruireElement(l->val);
+		free(l);
+	}
 }
 
 // retourne la liste dans laquelle l'élément v a été ajouté en fin
 // version itérative
 Liste ajoutFin_i(Element v, Liste l) {
-	Cellule* cellule_courante_p = l;
-	Cellule* derniere_cellule_p = malloc(sizeof(Cellule*));
-	derniere_cellule_p->val = v;
-	derniere_cellule_p->suiv = NULL;
-	while(cellule_courante_p->suiv != NULL){
-		cellule_courante_p->suiv = derniere_cellule_p;
+	Liste elem = creer(v);
+	Liste p = l;
+
+	if(estVide(p)){
+		return elem;
 	}
+
+	while(!estVide(p->suiv)){
+		p = p->suiv;
+	}
+	p->suiv = elem;
 	return l;
 }
 
 // version recursive
 Liste ajoutFin_r(Element v, Liste l) {
 	if(estVide(l)){
-		l = creer(v);
+		return creer(v);
 	}
 	else{
 		l->suiv = ajoutFin_r(v, l->suiv);
@@ -112,7 +115,14 @@ bool equalsElement(Element e1, Element e2){
 // Retourne un pointeur sur l'élément de la liste l contenant la valeur v ou NULL
 // version itérative
 Liste cherche_i(Element v,Liste l) {
-	return TODO;
+	Liste elem, p = l;
+	while(!estVide(p->suiv)){
+		if(equalsElement(p->val, p->suiv->val)){
+			elem = p;
+		}
+		p = p->suiv;
+	}
+	return elem;
 }
 
 // version récursive

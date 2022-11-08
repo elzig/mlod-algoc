@@ -21,6 +21,7 @@
 // Some Defines
 //----------------------------------------------------------------------------------
 #define NUM_SHOOTS 50
+#define NUM_SHOOTS_ENEMIES 20
 #define NUM_MAX_ENEMIES 50
 #define NUM_MAX_ENEMIES_SHOOT 5
 #define FIRST_WAVE 10
@@ -68,7 +69,7 @@ static Player player = { 0 };
 static Enemy enemy[NUM_MAX_ENEMIES] = { 0 };
 static Enemy shooterEnemy[NUM_MAX_ENEMIES_SHOOT] = { 0 };
 static Shoot shoot[NUM_SHOOTS] = { 0 };
-static Shoot enemyShoot[NUM_SHOOTS] = { 0 };
+static Shoot enemyShoot[NUM_MAX_ENEMIES_SHOOT][NUM_SHOOTS_ENEMIES] = { { 0 } };
 static EnemyWave wave = { 0 };
 
 static int shootRate = 0;
@@ -189,6 +190,23 @@ void InitGame(void)
         shoot[i].active = false;
         shoot[i].color = MAROON;
     }
+
+    // Initialize enemies shoots
+    for (int j = 0; j < NUM_MAX_ENEMIES_SHOOT; j++)
+    {
+        for (int i = 0; i < NUM_SHOOTS_ENEMIES; i++)
+        {
+            enemyShoot[j][i].rec.x = shooterEnemy[j].rec.x;
+            enemyShoot[j][i].rec.y = shooterEnemy[j].rec.y + shooterEnemy[j].rec.height/4;
+            enemyShoot[j][i].rec.width = 10;
+            enemyShoot[j][i].rec.height = 5;
+            enemyShoot[j][i].speed.x = 7;
+            enemyShoot[j][i].speed.y = 0;
+            enemyShoot[j][i].active = false;
+            enemyShoot[j][i].color = GREEN;
+        }
+    }
+    
 }
 
 // Update game (one frame)

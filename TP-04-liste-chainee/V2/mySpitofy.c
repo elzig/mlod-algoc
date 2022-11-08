@@ -41,5 +41,8 @@ bool equalsElement(Element e1, Element e2)
 
 int main(void)
 {
+    // Ouverture du fichier
+    
+
     return EXIT_SUCCESS;
 }

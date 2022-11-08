@@ -283,6 +283,32 @@ void UpdateGame(void)
 
                     if (smooth) alpha -= 0.02f;
 
+                    if (enemiesKill == activeEnemies)
+                    {
+                        enemiesKill = 0;
+
+                        for (int i = 0; i < activeEnemies; i++)
+                        {
+                            if (!enemy[i].active) enemy[i].active = true;
+                        }
+
+                        activeEnemies = FOURTH_WAVE;
+                        wave = FOURTH;
+                        smooth = false;
+                        alpha = 0.0f;
+                    }
+                } break;
+                case FOURTH:
+                {
+                    if (!smooth)
+                    {
+                        alpha += 0.02f;
+
+                        if (alpha >= 1.0f) smooth = true;
+                    }
+
+                    if (smooth) alpha -= 0.02f;
+
                     if (enemiesKill == activeEnemies) victory = true;
 
                 } break;
@@ -397,6 +423,7 @@ void DrawGame(void)
             if (wave == FIRST) DrawText("FIRST WAVE", screenWidth/2 - MeasureText("FIRST WAVE", 40)/2, screenHeight/2 - 40, 40, Fade(BLACK, alpha));
             else if (wave == SECOND) DrawText("SECOND WAVE", screenWidth/2 - MeasureText("SECOND WAVE", 40)/2, screenHeight/2 - 40, 40, Fade(BLACK, alpha));
             else if (wave == THIRD) DrawText("THIRD WAVE", screenWidth/2 - MeasureText("THIRD WAVE", 40)/2, screenHeight/2 - 40, 40, Fade(BLACK, alpha));
+            else if (wave == FOURTH) DrawText("FOURTH WAVE", screenWidth/2 - MeasureText("FOURTH WAVE", 40)/2, screenHeight/2 - 40, 40, Fade(BLACK, alpha));
 
             for (int i = 0; i < activeEnemies; i++)
             {

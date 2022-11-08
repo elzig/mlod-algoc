@@ -22,14 +22,16 @@
 //----------------------------------------------------------------------------------
 #define NUM_SHOOTS 50
 #define NUM_MAX_ENEMIES 50
+#define NUM_MAX_ENEMIES_SHOOT 5
 #define FIRST_WAVE 10
 #define SECOND_WAVE 20
 #define THIRD_WAVE 50
+#define FOURTH_WAVE 50
 
 //----------------------------------------------------------------------------------
 // Types and Structures Definition
 //----------------------------------------------------------------------------------
-typedef enum { FIRST = 0, SECOND, THIRD } EnemyWave;
+typedef enum { FIRST = 0, SECOND, THIRD, FOURTH } EnemyWave;
 
 typedef struct Player{
     Rectangle rec;
@@ -64,7 +66,9 @@ static bool victory = false;
 
 static Player player = { 0 };
 static Enemy enemy[NUM_MAX_ENEMIES] = { 0 };
+static Enemy shooterEnemy[NUM_MAX_ENEMIES_SHOOT] = { 0 };
 static Shoot shoot[NUM_SHOOTS] = { 0 };
+static Shoot enemyShoot[NUM_SHOOTS] = { 0 };
 static EnemyWave wave = { 0 };
 
 static int shootRate = 0;
@@ -158,6 +162,19 @@ void InitGame(void)
         enemy[i].speed.y = 5;
         enemy[i].active = true;
         enemy[i].color = GRAY;
+    }
+
+    // Initialize enemies who can shoot
+    for (int i = 0; i < NUM_MAX_ENEMIES_SHOOT; i++)
+    {
+        shooterEnemy[i].rec.width = 10;
+        shooterEnemy[i].rec.height = 10;
+        shooterEnemy[i].rec.x = GetRandomValue(screenWidth, screenWidth + 1000);
+        shooterEnemy[i].rec.y = GetRandomValue(0, screenHeight - enemy[i].rec.height);
+        shooterEnemy[i].speed.x = 5;
+        shooterEnemy[i].speed.y = 5;
+        shooterEnemy[i].active = true;
+        shooterEnemy[i].color = RED;
     }
 
     // Initialize shoots

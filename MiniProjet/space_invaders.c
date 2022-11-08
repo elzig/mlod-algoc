@@ -90,7 +90,7 @@ int main(void)
 {
     // Initialization (Note windowTitle is unused on Android)
     //---------------------------------------------------------
-    InitWindow(screenWidth, screenHeight, "classic game: space invaders");
+    InitWindow(screenWidth, screenHeight, "classic game remasterd: space invaders 2.0");
 
     InitGame();
 

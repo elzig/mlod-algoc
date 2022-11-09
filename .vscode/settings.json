@@ -1,5 +1,8 @@
 {
     "files.associations": {
-        "echangecontenu.h": "c"
+        "echangecontenu.h": "c",
+        "linkedlistofmusic.h": "c",
+        "stdlib.h": "c",
+        "typeinfo": "c"
     }
 }

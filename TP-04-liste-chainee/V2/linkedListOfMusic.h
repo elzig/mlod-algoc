@@ -19,7 +19,7 @@ typedef struct
 } Music;
 
 
-// fonctions exter de la bib linkedList.h
+// fonctions extern de la bib linkedList.h
 void afficheElement(Element e);
 void detruireElement(Element e);
 bool equalsElement(Element e1, Element e2);

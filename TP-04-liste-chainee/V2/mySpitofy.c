@@ -1,53 +1,59 @@
-// gcc -W -Wall -Wno-unused-parameter -std=c99 linkedListOfMusic.c mySpitofy.c -o mySpitofy
+// gcc -W -Wall -Wno-unused-parameter -std=c99 linkedList.c linkedListOfMusic.c mySpitofy.c -o mySpitofy
 // ./mySpitofy
 
+#include <errno.h>
 #include "linkedListOfMusic.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-typedef struct
-{
-    char *name;
-    char *artist;
-    char *album;
-    char *genre;
-    char *discNumber;
-    int track;
-    int number;
-    int year;
-} Musique;
-
-
-// définition des fonctions extern
-void afficheElement(Element e)
-{
-    printf("%s,", ((Musique *)e)->name);
-    printf("%s,", ((Musique *)e)->artist);
-    printf("%s,", ((Musique *)e)->album);
-    printf("%s,", ((Musique *)e)->genre);
-    printf("%s,", ((Musique *)e)->discNumber);
-    printf("%i,", ((Musique *)e)->track);
-    printf("%i,", ((Musique *)e)->number);
-    printf("%i,", ((Musique *)e)->year);
-}
-
-
-void detruireElement(Element e)
-{
-    free((Musique *)e);
-}
-
-
-bool equalsElement(Element e1, Element e2)
-{
-
-}
 
 
 int main(void)
 {
     // Ouverture du fichier
+    // char fileName[] = "music.csv";
+    // FILE* f;
+
+    // f = fopen(fileName, 'r');
+
+    // if((f == NULL))
+    // {
+    //     printf ("Code de l'erreur : %d\n", errno);
+
+    //     if(errno == ENOENT)
+    //     {
+    //         printf("Le fichier n'existe pas !\n");
+    //     }
+    //     else
+    //     {
+    //         printf("Erreur inconnue\n");
+    //     }
+
+    //     return EXIT_FAILURE;
+    // }
+
+    // char buffer[255];
+    // while(fgets(buffer, 10, f) != NULL)
+    // {
+    //     printf(" %s",buffer);
+    // }
+
+    // fclose(f);
+
+    // test d'affichage d'une liste d'une musique
+    Music musique;
+    Liste l = NULL;
+
+    musique.name = "En Y";
+    musique.artist = "Jul";
+    musique.album = "My World";
+    musique.genre = "Rap";
+    musique.discNumber = "unknown";
+    musique.track = 1;
+    musique.number = 1;
+    musique.year = 2015;
+
+    l = creer(&musique);
+    afficheListe_r(l);
+
+    // detruire_r(l);
 
     return EXIT_SUCCESS;
 }

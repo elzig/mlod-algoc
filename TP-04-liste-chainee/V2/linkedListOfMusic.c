@@ -11,7 +11,7 @@ void afficheElement(Element e)
     printf("%s,", ((Music *)e)->discNumber);
     printf("%i,", ((Music *)e)->track);
     printf("%i,", ((Music *)e)->number);
-    printf("%i,", ((Music *)e)->year);
+    printf("%i", ((Music *)e)->year);
 }
 
 
@@ -23,5 +23,5 @@ void detruireElement(Element e)
 
 bool equalsElement(Element e1, Element e2)
 {
-
+	return !memcmp(e1, e2, sizeof(Music));
 }

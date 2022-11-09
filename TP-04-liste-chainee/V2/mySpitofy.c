@@ -1,3 +1,6 @@
+// gcc -W -Wall -Wno-unused-parameter -std=c99 linkedListOfMusic.c mySpitofy.c -o mySpitofy
+// ./mySpitofy
+
 #include "linkedListOfMusic.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,19 +22,20 @@ typedef struct
 // définition des fonctions extern
 void afficheElement(Element e)
 {
-    printf("%s ", ((Musique *)e)->name);
-    printf("%s ", ((Musique *)e)->artist);
-    printf("%s ", ((Musique *)e)->album);
-    printf("%s ", ((Musique *)e)->genre);
-    printf("%i ", ((Musique *)e)->discNumber);
-    printf("%i ", ((Musique *)e)->number);
-    printf("%i ", ((Musique *)e)->year);
+    printf("%s,", ((Musique *)e)->name);
+    printf("%s,", ((Musique *)e)->artist);
+    printf("%s,", ((Musique *)e)->album);
+    printf("%s,", ((Musique *)e)->genre);
+    printf("%s,", ((Musique *)e)->discNumber);
+    printf("%i,", ((Musique *)e)->track);
+    printf("%i,", ((Musique *)e)->number);
+    printf("%i,", ((Musique *)e)->year);
 }
 
 
 void detruireElement(Element e)
 {
-
+    
 }
 
 

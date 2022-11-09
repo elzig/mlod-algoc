@@ -35,7 +35,7 @@ void afficheElement(Element e)
 
 void detruireElement(Element e)
 {
-    
+    free((Musique *)e);
 }
 
 

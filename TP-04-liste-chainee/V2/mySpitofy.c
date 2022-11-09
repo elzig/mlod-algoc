@@ -11,7 +11,7 @@ int main(void)
     // char fileName[] = "music.csv";
     // FILE* f;
 
-    // f = fopen(fileName, 'r');
+    // f = fopen(fileName, "r");
 
     // if((f == NULL))
     // {
@@ -53,7 +53,7 @@ int main(void)
     l = creer(&musique);
     afficheListe_r(l);
 
-    // detruire_r(l);
+    detruire_r(l);
 
     return EXIT_SUCCESS;
 }

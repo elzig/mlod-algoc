@@ -21,18 +21,19 @@
 // Some Defines
 //----------------------------------------------------------------------------------
 #define NUM_SHOOTS 50
-#define NUM_SHOOTS_ENEMIES 20
-#define NUM_MAX_ENEMIES 50
-#define NUM_MAX_ENEMIES_SHOOT 5
+#define NUM_MAX_ENEMIES 80
 #define FIRST_WAVE 10
 #define SECOND_WAVE 20
 #define THIRD_WAVE 50
-#define FOURTH_WAVE 50
+#define FOURTH_WAVE 60
+#define FIFTH_WAVE 80
+#define NUM_BONUS 10
+#define NUM_MALUS 5
 
 //----------------------------------------------------------------------------------
 // Types and Structures Definition
 //----------------------------------------------------------------------------------
-typedef enum { FIRST = 0, SECOND, THIRD, FOURTH } EnemyWave;
+typedef enum { FIRST = 0, SECOND, THIRD, FOURTH, FIFTH } EnemyWave;
 
 typedef struct Player{
     Rectangle rec;
@@ -54,6 +55,20 @@ typedef struct Shoot{
     Color color;
 } Shoot;
 
+typedef struct Bonus{
+    Rectangle rec;
+    Vector2 speed;
+    bool active;
+    Color color;
+} Bonus;
+
+typedef struct Malus{
+    Rectangle rec;
+    Vector2 speed;
+    bool active;
+    Color color;
+} Malus;
+
 //------------------------------------------------------------------------------------
 // Global Variables Declaration
 //------------------------------------------------------------------------------------
@@ -63,14 +78,15 @@ static const int screenHeight = 450;
 static bool gameOver = false;
 static bool pause =  false;
 static int score = 0;
+static int score2 = 0;
 static bool victory = false;
 
 static Player player = { 0 };
 static Enemy enemy[NUM_MAX_ENEMIES] = { 0 };
-static Enemy shooterEnemy[NUM_MAX_ENEMIES_SHOOT] = { 0 };
 static Shoot shoot[NUM_SHOOTS] = { 0 };
-static Shoot enemyShoot[NUM_MAX_ENEMIES_SHOOT][NUM_SHOOTS_ENEMIES] = { { 0 } };
 static EnemyWave wave = { 0 };
+static Bonus bonus[NUM_BONUS] = { 0 };
+static Malus malus[NUM_MALUS] = { 0 };
 
 static int shootRate = 0;
 static float alpha = 0.0f;
@@ -141,6 +157,7 @@ void InitGame(void)
     activeEnemies = FIRST_WAVE;
     enemiesKill = 0;
     score = 0;
+    score2 = 0;
     alpha = 0;
 
     // Initialize player
@@ -165,17 +182,30 @@ void InitGame(void)
         enemy[i].color = GRAY;
     }
 
-    // Initialize enemies who can shoot
-    for (int i = 0; i < NUM_MAX_ENEMIES_SHOOT; i++)
+    // Initialize bonuses
+    for (int i = 0; i < NUM_BONUS; i++)
     {
-        shooterEnemy[i].rec.width = 10;
-        shooterEnemy[i].rec.height = 10;
-        shooterEnemy[i].rec.x = GetRandomValue(screenWidth, screenWidth + 1000);
-        shooterEnemy[i].rec.y = GetRandomValue(0, screenHeight - enemy[i].rec.height);
-        shooterEnemy[i].speed.x = 5;
-        shooterEnemy[i].speed.y = 5;
-        shooterEnemy[i].active = true;
-        shooterEnemy[i].color = RED;
+        bonus[i].rec.width = 10;
+        bonus[i].rec.height = 10;
+        bonus[i].rec.x = GetRandomValue(screenWidth, screenWidth + 1000);
+        bonus[i].rec.y = GetRandomValue(0, screenHeight - bonus[i].rec.height);
+        bonus[i].speed.x = 5;
+        bonus[i].speed.y = 5;
+        bonus[i].active = false;
+        bonus[i].color = GREEN;
+    }
+
+    // Initialize Maluss
+    for (int i = 0; i < NUM_MALUS; i++)
+    {
+        malus[i].rec.width = 10;
+        malus[i].rec.height = 10;
+        malus[i].rec.x = GetRandomValue(screenWidth, screenWidth + 1000);
+        malus[i].rec.y = GetRandomValue(0, screenHeight - malus[i].rec.height);
+        malus[i].speed.x = 5;
+        malus[i].speed.y = 5;
+        malus[i].active = false;
+        malus[i].color = RED;
     }
 
     // Initialize shoots
@@ -190,23 +220,6 @@ void InitGame(void)
         shoot[i].active = false;
         shoot[i].color = MAROON;
     }
-
-    // Initialize enemies shoots
-    for (int j = 0; j < NUM_MAX_ENEMIES_SHOOT; j++)
-    {
-        for (int i = 0; i < NUM_SHOOTS_ENEMIES; i++)
-        {
-            enemyShoot[j][i].rec.x = shooterEnemy[j].rec.x;
-            enemyShoot[j][i].rec.y = shooterEnemy[j].rec.y + shooterEnemy[j].rec.height/4;
-            enemyShoot[j][i].rec.width = 10;
-            enemyShoot[j][i].rec.height = 5;
-            enemyShoot[j][i].speed.x = 7;
-            enemyShoot[j][i].speed.y = 0;
-            enemyShoot[j][i].active = false;
-            enemyShoot[j][i].color = GREEN;
-        }
-    }
-    
 }
 
 // Update game (one frame)
@@ -266,6 +279,11 @@ void UpdateGame(void)
                             if (!enemy[i].active) enemy[i].active = true;
                         }
 
+                        for (int i = 0; i < NUM_MALUS; i++)
+                        {
+                            malus[i].active = true;
+                        }
+
                         activeEnemies = THIRD_WAVE;
                         wave = THIRD;
                         smooth = false;
@@ -292,10 +310,17 @@ void UpdateGame(void)
                             if (!enemy[i].active) enemy[i].active = true;
                         }
 
+                        for (int i = 0; i < NUM_BONUS; i++)
+                        {
+                            bonus[i].active = true;
+                        }
+
                         activeEnemies = FOURTH_WAVE;
                         wave = FOURTH;
                         smooth = false;
                         alpha = 0.0f;
+                        player.speed.x = 5;
+                        player.speed.y = 5;
                     }
                 } break;
                 case FOURTH:
@@ -309,7 +334,33 @@ void UpdateGame(void)
 
                     if (smooth) alpha -= 0.02f;
 
-                    if (enemiesKill == activeEnemies) victory = true;
+                    if (score2 >= 5000)
+                    {
+                        enemiesKill = 0;
+
+                        for (int i = 0; i < activeEnemies; i++)
+                        {
+                            if (!enemy[i].active) enemy[i].active = true;
+                        }
+
+                        activeEnemies = FIFTH_WAVE;
+                        wave = FIFTH;
+                        smooth = false;
+                        alpha = 0.0f;
+                    }
+                } break;
+                case FIFTH:
+                {
+                    if (!smooth)
+                    {
+                        alpha += 0.02f;
+
+                        if (alpha >= 1.0f) smooth = true;
+                    }
+
+                    if (smooth) alpha -= 0.02f;
+
+                    if (score2 == 20000) victory = true;
 
                 } break;
                 default: break;
@@ -342,6 +393,65 @@ void UpdateGame(void)
                 }
             }
 
+            // Bonus behaviour
+            for (int i = 0; i < NUM_BONUS; i++)
+            {
+                if(bonus[i].active)
+                {
+                    bonus[i].rec.x -= bonus[i].speed.x;
+
+                    if (bonus[i].rec.x < 0)
+                    {
+                        bonus[i].rec.x = GetRandomValue(screenWidth, screenWidth + 1000);
+                        bonus[i].rec.y = GetRandomValue(0, screenHeight - bonus[i].rec.height);
+                    }
+                }
+            }
+
+            // Malus behaviour
+            for (int i = 0; i < NUM_MALUS; i++)
+            {
+                if(malus[i].active)
+                {
+                    malus[i].rec.x -= malus[i].speed.x;
+
+                    if (malus[i].rec.x < 0)
+                    {
+                        malus[i].rec.x = GetRandomValue(screenWidth, screenWidth + 1000);
+                        malus[i].rec.y = GetRandomValue(0, screenHeight - malus[i].rec.height);
+                    }
+                }
+            }
+
+            // Collision with bonus
+            for (int i = 0; i < NUM_BONUS; i++)
+            {
+                if (CheckCollisionRecs(player.rec, bonus[i].rec))
+                    {
+                        bonus[i].active = false;
+                        bonus[i].rec.x = GetRandomValue(screenWidth, screenWidth + 1000);
+                        bonus[i].rec.y = GetRandomValue(0, screenHeight - bonus[i].rec.height);
+                        score2 += 500;
+                    }
+            }
+
+            // Collision with malus
+            for (int i = 0; i < NUM_MALUS; i++)
+            {
+                if (CheckCollisionRecs(player.rec, malus[i].rec))
+                    {
+                        malus[i].active = false;
+                        malus[i].rec.x = GetRandomValue(screenWidth, screenWidth + 1000);
+                        malus[i].rec.y = GetRandomValue(0, screenHeight - malus[i].rec.height);
+                        if (wave == THIRD)
+                        {
+                            player.speed.x = 2;
+                            player.speed.y = 2;
+                        }
+                        if (wave == FOURTH || wave == FIFTH) InitGame();
+                    }
+            }
+
             // Wall behaviour
             if (player.rec.x <= 0) player.rec.x = 0;
             if (player.rec.x + player.rec.width >= screenWidth) player.rec.x = screenWidth - player.rec.width;
@@ -355,6 +465,7 @@ void UpdateGame(void)
 
                 for (int i = 0; i < NUM_SHOOTS; i++)
                 {
+                    if (wave == FOURTH) break;
                     if (!shoot[i].active && shootRate%20 == 0)
                     {
                         shoot[i].rec.x = player.rec.x;
@@ -424,6 +535,11 @@ void DrawGame(void)
             else if (wave == SECOND) DrawText("SECOND WAVE", screenWidth/2 - MeasureText("SECOND WAVE", 40)/2, screenHeight/2 - 40, 40, Fade(BLACK, alpha));
             else if (wave == THIRD) DrawText("THIRD WAVE", screenWidth/2 - MeasureText("THIRD WAVE", 40)/2, screenHeight/2 - 40, 40, Fade(BLACK, alpha));
             else if (wave == FOURTH) DrawText("FOURTH WAVE", screenWidth/2 - MeasureText("FOURTH WAVE", 40)/2, screenHeight/2 - 40, 40, Fade(BLACK, alpha));
+            else if (wave == FIFTH)
+            {
+                DrawText("YOU WANT MORE ?", screenWidth/2 - MeasureText("YOU WANT MORE ?", 40)/2, screenHeight/2 - 100, 40, Fade(BLACK, alpha));
+                DrawText("FIFTH WAVE - HARDCORE", screenWidth/2 - MeasureText("FIFTH WAVE - HARDCORE", 40)/2, screenHeight/2 - 40, 40, Fade(RED, alpha));
+            }
 
             for (int i = 0; i < activeEnemies; i++)
             {
@@ -435,7 +551,17 @@ void DrawGame(void)
                 if (shoot[i].active) DrawRectangleRec(shoot[i].rec, shoot[i].color);
             }
 
-            DrawText(TextFormat("%04i", score), 20, 20, 40, GRAY);
+            for (int i = 0; i < NUM_BONUS; i++)
+            {
+                if(bonus[i].active) DrawRectangleRec(bonus[i].rec, bonus[i].color);
+            }
+
+            for (int i = 0; i < NUM_MALUS; i++)
+            {
+                if(malus[i].active) DrawRectangleRec(malus[i].rec, malus[i].color);
+            }
+
+            DrawText(TextFormat("%04i", score + score2), 20, 20, 40, GRAY);
 
             if (victory) DrawText("YOU WIN", screenWidth/2 - MeasureText("YOU WIN", 40)/2, screenHeight/2 - 40, 40, BLACK);
 

@@ -1,7 +1,7 @@
 #include "linkedListOfMusic.h"
 #include <string.h>
 #include <stdio.h>
-#include <errno.h>
+#include <stdlib.h>
 
 
 // ----------------------------------------------------
@@ -22,7 +22,8 @@ void afficheElement(Element e)
 
 void detruireElement(Element e)
 {
-    free((Music *)e);
+    Music* musique = (Music*)e;
+    free(musique);
 }
 
 
@@ -36,118 +37,102 @@ bool equalsElement(Element e1, Element e2)
 // fonctions propres à la bib linkedListOfMusic.h
 // ----------------------------------------------------
 
-Music creerMusique(char *name1, char *artist1, char *album1, char *genre1, char* discNumber1, char* trackNumber1, char* year1)
-{
-    Music* music = malloc(sizeof(Music));
-    music->name = name1;
-    music->artist = artist1;
-    music->album = album1;
-    music->genre = genre1;
-    music->discNumber = discNumber1;
-    music->trackNumber = trackNumber1;
-    music->year = year1;
+Music* ligneVersMusique(char* ligne){
+    Music* musique = malloc(sizeof(Music));
+    char *mot, *ligne_dup = strdup(ligne); // on duplique la ligne car on va réallouer le pointeur
+    
+    // on sépare les mots de la ligne 1 à 1 puis on les assigne
+    mot = strsep(&ligne_dup, ",");
+    musique->name = calloc(sizeof(char), strlen(mot)+1);
+    strcpy(musique->name, mot);
 
-    return *music;
+    mot = strsep(&ligne_dup, ",");
+    musique->artist = calloc(sizeof(char), strlen(mot)+1);
+    strcpy(musique->artist, mot);
+
+    mot = strsep(&ligne_dup, ",");
+    musique->album = calloc(sizeof(char), strlen(mot)+1);
+    strcpy(musique->album, mot);
+
+    mot = strsep(&ligne_dup, ",");
+    musique->genre = calloc(sizeof(char), strlen(mot)+1);
+    strcpy(musique->genre, mot);
+
+    mot = strsep(&ligne_dup, ",");
+    musique->discNumber = calloc(sizeof(char), strlen(mot)+1);
+    strcpy(musique->discNumber, mot);
+
+    mot = strsep(&ligne_dup, ",");
+    musique->trackNumber = calloc(sizeof(char), strlen(mot)+1);
+    strcpy(musique->trackNumber, mot);
+
+    mot = strsep(&ligne_dup, ",");
+    musique->year = calloc(sizeof(char), strlen(mot)+1);
+    strcpy(musique->year, mot);
+    
+    return musique;
 }
 
-Music* ligneVersMusique(char* ligne)
+
+Liste CSVVersListe(FILE* fichier, Liste listeMusique)
 {
-    Music *music = malloc(sizeof(Music));
+    // on fait un calloc pour la ligne afin d'éviter les problèmes de mémoire
+    // pour ne pas remplacer les anciennes cellules déjà créées
+    char* ligne = calloc(MAXCHAR, sizeof(char));
+    fgets(ligne, MAXCHAR, fichier);
+    
+    // on crée une liste avec la première ligne (Name, Artist, ...)
+    listeMusique = creer(ligneVersMusique(ligne));
+    free(ligne);
 
-    // récupération des infos séparés par la virgule
-    music->name = strsep(&ligne, ",");
-    music->artist = strsep(&ligne, ",");
-    music->album = strsep(&ligne, ",");
-    music->genre = strsep(&ligne, ",");
-    music->discNumber = strsep(&ligne, ",");
-    music->trackNumber = strsep(&ligne, ",");
-    music->year = strsep(&ligne, ",");
-
-    return music;
-}
-
-
-void lireFichierCSV(char* pathFichier, Liste listeMusique)
-{
-    // ouverture du fichier
-    char nomFichier[] = "music_test.csv";
-    FILE* fichier;
-
-    fichier = fopen(nomFichier, "r");
-
-    // gestion des erreurs d'ouverture
-    if((fichier == NULL))
+    while(true)
     {
-        printf ("Code de l'erreur : %d\n", errno);
+        ligne = calloc(MAXCHAR, sizeof(char));
+        fgets(ligne, MAXCHAR, fichier);
 
-        if(errno == ENOENT)
+        // on sort de la boucle quand on rencontre une ligne vide
+        if(strlen(ligne) == 0)
         {
-            printf("Le fichier n'existe pas !\n");
-        }
-        else
-        {
-            printf("Erreur inconnue\n");
+            free(ligne);
+            break;
         }
 
-        return ;
+        // on utilise ajoutFin_i sinon la liste sera à l'envers
+        listeMusique = ajoutFin_i(ligneVersMusique(ligne), listeMusique);
+        free(ligne);
+    }
+    
+    return listeMusique;
+}
+
+
+Liste triABulles(Liste listeMusique){
+	// pour éviter les erreurs de segmentation avec les ->
+    if(estVide(listeMusique)){
+        return NULL;
     }
 
-    // lecture des lignes
-    char ligne[MAXCHAR];
-    int nb_musique = 0;
-    Music* musique;
-    while(fgets(ligne, MAXCHAR, fichier) != NULL)
-    {
-        char* lignedup = strdup(ligne);
-        musique = ligneVersMusique(lignedup);
-        listeMusique = ajoutFin_r(musique, listeMusique);
-        free(musique);
-        free(lignedup);
+    Liste precedent = listeMusique;
+    Liste suivant = NULL;
 
-        /*nb_musique ++;
-        char* ligne_p = ligne;
+    //on parcourt la liste une première fois
+    while(!estVide(precedent)){
+        suivant = precedent->suiv;
 
-        char* name = strsep(&ligne_p, ",");
-        char* artist = strsep(&ligne_p, ",");
-        char* album = strsep(&ligne_p, ",");
-        char* genre = strsep(&ligne_p, ",");
-        char* discNumber = strsep(&ligne_p, ",");
-        char* trackNumber = strsep(&ligne_p, ",");
-        char* year = strsep(&ligne_p, ",");
-        Music musique = creerMusique(name, artist, album, genre, discNumber, trackNumber, year);
-        // afficheElement(&musique);
-        listeMusique = ajoutTete(&musique, listeMusique);
-        afficheListe_i(listeMusique);*/
+        // on permute les éléments 2 à 2 à chaque fois si le suivant est plus petit
+        while(!estVide(suivant))
+        {
+            if(atoi(((Music*)(suivant->val))->year) < atoi(((Music*)(precedent->val))->year))
+            {
+                // permutation des éléments
+                void* tmp;
+                tmp = suivant->val;
+                suivant->val = precedent->val;
+                precedent->val = tmp;
+            }
+            suivant = suivant->suiv;
+        }
+        precedent = precedent->suiv;
     }
-    // printf("Nombre de musiques : %i\n", nb_musique);
-    // rewind(fichier);
-    // size_t len;
-
-    // for(int i = 0; i < nb_musique; i++)
-    // {
-    //     fgets(ligne, MAXCHAR, fichier);
-    //     ligne[(len = strcspn(ligne, "\n"))] = 0;
-
-    //     if(i==0)
-    //     {
-    //         continue;
-    //     }
-
-    //     char* ligne_p = strdup(ligne);
-
-    //     char* name = strsep(&ligne_p, ",");
-    //     char* artist = strsep(&ligne_p, ",");
-    //     char* album = strsep(&ligne_p, ",");
-    //     char* genre = strsep(&ligne_p, ",");
-    //     char* discNumber = strsep(&ligne_p, ",");
-    //     char* trackNumber = strsep(&ligne_p, ",");
-    //     char* year = strsep(&ligne_p, ",");
-    //     Music musique = creerMusique(name, artist, album, genre, discNumber, trackNumber, year);
-    //     listeMusique = ajoutFin_r(&musique, listeMusique);
-    // }
-
-    afficheListe_r(listeMusique);
-
-    fclose(fichier);
+    return listeMusique;
 }
-

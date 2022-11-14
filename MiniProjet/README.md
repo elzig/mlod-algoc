@@ -52,4 +52,4 @@ Je gère ensuite les collisions de chacune des entités avec le joueur et je dé
 Pour finir je dessine sur l'écran les deux entités (seulement si elles sont actives).
 
 # Vidéo de démo
-https://drive.google.com/drive/folders/1AJNvGa_KkCiL1TDWzUNQXfP1BOFGDkyL?usp=sharing
+https://youtu.be/OPUtUBe8xTw
